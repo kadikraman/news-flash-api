@@ -1,0 +1,20 @@
+{
+  "name": "news-flash-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Kadi Kraman <hellokadi@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "micro"
+  },
+  "dependencies": {
+    "apollo-server": "^3.3.0",
+    "apollo-server-micro": "^3.3.0",
+    "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.5.3",
+    "micro": "^9.3.4",
+    "micro-cors": "^0.1.1",
+    "nanoid": "^3.1.25"
+  }
+}
