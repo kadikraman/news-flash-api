@@ -48,9 +48,9 @@ const stories = [
 const typeDefs = gql`
   type Story {
     id: ID!
-    author: String!
+    author: String
     summary: String!
-    text:  String!
+    text:  String
     title: String!
     bookmarkId: ID
   }
@@ -96,8 +96,8 @@ const resolvers = {
   Mutation: {
     async addBookmark(parent, args) {
       await wait(1000);
-      if (!bookmarks.find(bookmark => bookmark.story.id === args.storyId)) {
-        const storyToAdd = stories.find(story => story.id === args.storyId);
+      if (!bookmarks.find(bookmark => bookmark.story.id === args.id)) {
+        const storyToAdd = stories.find(story => story.id === args.id);
         if (storyToAdd) {
           const bookmark = { id: nanoid(), story: storyToAdd };
           bookmarks.push(bookmark);
