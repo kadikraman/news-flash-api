@@ -1,4 +1,4 @@
-const cors = require('micro-cors')(); // highlight-line
+const cors = require('micro-cors')();
 const { ApolloServer, gql } = require('apollo-server-micro');
 const { send } = require('micro');
 const { nanoid } = require('nanoid');
