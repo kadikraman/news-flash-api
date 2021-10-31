@@ -2,10 +2,9 @@ const cors = require('micro-cors')();
 const { ApolloServer, gql } = require('apollo-server-micro');
 const { send } = require('micro');
 const { nanoid } = require('nanoid');
+const { getBookmarks, setBookmarks } = require('./bookmarks');
 
-const wait = (numMs) => new Promise(res => setTimeout(() => res(), numMs));
-
-let bookmarks = [];
+const wait = (numMs) => new Promise((res) => setTimeout(() => res(), numMs));
 
 const stories = [
   {
@@ -20,30 +19,30 @@ const stories = [
     author: 'Paul Pear',
     title: 'Banana',
     summary: 'A banana is an elongated, edible fruit – botanically a berry – produced by several kinds of large herbaceous flowering plants in the genus Musa. In some countries, bananas used for cooking may be called "plantains", distinguishing them from dessert bananas.',
-    text: 'A banana is an elongated, edible fruit – botanically a berry – produced by several kinds of large herbaceous flowering plants in the genus Musa. In some countries, bananas used for cooking may be called "plantains", distinguishing them from dessert bananas. A banana is an elongated, edible fruit – botanically a berry – produced by several kinds of large herbaceous flowering plants in the genus Musa. In some countries, bananas used for cooking may be called "plantains", distinguishing them from dessert bananas. A banana is an elongated, edible fruit – botanically a berry – produced by several kinds of large herbaceous flowering plants in the genus Musa. In some countries, bananas used for cooking may be called "plantains", distinguishing them from dessert bananas.'
+    text: 'A banana is an elongated, edible fruit – botanically a berry – produced by several kinds of large herbaceous flowering plants in the genus Musa. In some countries, bananas used for cooking may be called "plantains", distinguishing them from dessert bananas. A banana is an elongated, edible fruit – botanically a berry – produced by several kinds of large herbaceous flowering plants in the genus Musa. In some countries, bananas used for cooking may be called "plantains", distinguishing them from dessert bananas. A banana is an elongated, edible fruit – botanically a berry – produced by several kinds of large herbaceous flowering plants in the genus Musa. In some countries, bananas used for cooking may be called "plantains", distinguishing them from dessert bananas.',
   },
   {
     id: '3',
     author: 'Lucy Lychee',
     title: 'Matcha',
     summary: 'Matcha is finely ground powder of specially grown and processed green tea leaves, traditionally consumed in East Asia. The green tea plants used for matcha are shade-grown for three to four weeks before harvest; the stems and veins are removed during processing.',
-    text: 'Matcha is finely ground powder of specially grown and processed green tea leaves, traditionally consumed in East Asia. The green tea plants used for matcha are shade-grown for three to four weeks before harvest; the stems and veins are removed during processing. Matcha is finely ground powder of specially grown and processed green tea leaves, traditionally consumed in East Asia. The green tea plants used for matcha are shade-grown for three to four weeks before harvest; the stems and veins are removed during processing. Matcha is finely ground powder of specially grown and processed green tea leaves, traditionally consumed in East Asia. The green tea plants used for matcha are shade-grown for three to four weeks before harvest; the stems and veins are removed during processing.'
+    text: 'Matcha is finely ground powder of specially grown and processed green tea leaves, traditionally consumed in East Asia. The green tea plants used for matcha are shade-grown for three to four weeks before harvest; the stems and veins are removed during processing. Matcha is finely ground powder of specially grown and processed green tea leaves, traditionally consumed in East Asia. The green tea plants used for matcha are shade-grown for three to four weeks before harvest; the stems and veins are removed during processing. Matcha is finely ground powder of specially grown and processed green tea leaves, traditionally consumed in East Asia. The green tea plants used for matcha are shade-grown for three to four weeks before harvest; the stems and veins are removed during processing.',
   },
   {
     id: '4',
     author: 'Pippa Pineapple',
     title: 'Stonehenge',
     summary: 'Stonehenge is a prehistoric monument on Salisbury Plain in Wiltshire, England, two miles west of Amesbury. It consists of an outer ring of vertical sarsen standing stones, each around 13 feet high, seven feet wide, and weighing around 25 tons, topped by connecting horizontal lintel stones.',
-    text: 'Stonehenge is a prehistoric monument on Salisbury Plain in Wiltshire, England, two miles west of Amesbury. It consists of an outer ring of vertical sarsen standing stones, each around 13 feet high, seven feet wide, and weighing around 25 tons, topped by connecting horizontal lintel stones. Stonehenge is a prehistoric monument on Salisbury Plain in Wiltshire, England, two miles west of Amesbury. It consists of an outer ring of vertical sarsen standing stones, each around 13 feet high, seven feet wide, and weighing around 25 tons, topped by connecting horizontal lintel stones. Stonehenge is a prehistoric monument on Salisbury Plain in Wiltshire, England, two miles west of Amesbury. It consists of an outer ring of vertical sarsen standing stones, each around 13 feet high, seven feet wide, and weighing around 25 tons, topped by connecting horizontal lintel stones.'
+    text: 'Stonehenge is a prehistoric monument on Salisbury Plain in Wiltshire, England, two miles west of Amesbury. It consists of an outer ring of vertical sarsen standing stones, each around 13 feet high, seven feet wide, and weighing around 25 tons, topped by connecting horizontal lintel stones. Stonehenge is a prehistoric monument on Salisbury Plain in Wiltshire, England, two miles west of Amesbury. It consists of an outer ring of vertical sarsen standing stones, each around 13 feet high, seven feet wide, and weighing around 25 tons, topped by connecting horizontal lintel stones. Stonehenge is a prehistoric monument on Salisbury Plain in Wiltshire, England, two miles west of Amesbury. It consists of an outer ring of vertical sarsen standing stones, each around 13 feet high, seven feet wide, and weighing around 25 tons, topped by connecting horizontal lintel stones.',
   },
   {
     id: '5',
     author: 'Betty Botany',
     title: 'Cartography',
     summary: 'Cartography is the study and practice of making and using maps. Combining science, aesthetics, and technique, cartography builds on the premise that reality can be modeled in ways that communicate spatial information effectively.',
-    text: 'Cartography is the study and practice of making and using maps. Combining science, aesthetics, and technique, cartography builds on the premise that reality can be modeled in ways that communicate spatial information effectively. Cartography is the study and practice of making and using maps. Combining science, aesthetics, and technique, cartography builds on the premise that reality can be modeled in ways that communicate spatial information effectively. Cartography is the study and practice of making and using maps. Combining science, aesthetics, and technique, cartography builds on the premise that reality can be modeled in ways that communicate spatial information effectively. Cartography is the study and practice of making and using maps. Combining science, aesthetics, and technique, cartography builds on the premise that reality can be modeled in ways that communicate spatial information effectively.'
-  }
-]
+    text: 'Cartography is the study and practice of making and using maps. Combining science, aesthetics, and technique, cartography builds on the premise that reality can be modeled in ways that communicate spatial information effectively. Cartography is the study and practice of making and using maps. Combining science, aesthetics, and technique, cartography builds on the premise that reality can be modeled in ways that communicate spatial information effectively. Cartography is the study and practice of making and using maps. Combining science, aesthetics, and technique, cartography builds on the premise that reality can be modeled in ways that communicate spatial information effectively. Cartography is the study and practice of making and using maps. Combining science, aesthetics, and technique, cartography builds on the premise that reality can be modeled in ways that communicate spatial information effectively.',
+  },
+];
 
 const typeDefs = gql`
   type Story {
@@ -73,10 +72,11 @@ const typeDefs = gql`
 
 const resolvers = {
   Story: {
-    bookmarkId(parent) {
-      const bookmark = bookmarks.find(bookmark => bookmark.story.id === parent.id);
+    bookmarkId: async (parent) => {
+      const bookmarks = await getBookmarks();
+      const bookmark = bookmarks.find((b) => b.story.id === parent.id);
       return bookmark ? bookmark.id : null;
-    }
+    },
   },
   Query: {
     async stories() {
@@ -85,22 +85,24 @@ const resolvers = {
     },
     async bookmarks() {
       await wait(1000);
+      const bookmarks = await getBookmarks();
       return bookmarks;
     },
     async story(parent, args) {
       await wait(1000);
-      const story = stories.find(story => story.id === args.id);
+      const story = stories.find((s) => s.id === args.id);
       return story || null;
     },
   },
   Mutation: {
     async addBookmark(parent, args) {
       await wait(1000);
-      if (!bookmarks.find(bookmark => bookmark.story.id === args.id)) {
-        const storyToAdd = stories.find(story => story.id === args.id);
+      const bookmarks = await getBookmarks();
+      if (!bookmarks.find((bookmark) => bookmark.story.id === args.id)) {
+        const storyToAdd = stories.find((story) => story.id === args.id);
         if (storyToAdd) {
           const bookmark = { id: nanoid(), story: storyToAdd };
-          bookmarks.push(bookmark);
+          setBookmarks([...bookmarks, bookmark]);
           return bookmark;
         }
       }
@@ -108,15 +110,18 @@ const resolvers = {
     },
     async removeBookmark(parent, args) {
       await wait(1000);
-      const bookmarkToRemove = bookmarks.find(bookmark => bookmark.id === args.id);
-  
+      const bookmarks = await getBookmarks();
+      const bookmarkToRemove = bookmarks.find((bookmark) => bookmark.id === args.id);
+
       if (bookmarkToRemove) {
-        bookmarks = bookmarks.filter(bookmark => bookmark.id !== args.id);
+        const storeBookmarks = await getBookmarks();
+        const newBookmarks = storeBookmarks.filter((b) => b.id !== args.id);
+        setBookmarks(newBookmarks);
         return true;
       }
-  
+
       return false;
-    }
+    },
   },
 };
 
@@ -124,5 +129,5 @@ const apolloServer = new ApolloServer({ typeDefs, resolvers });
 
 module.exports = apolloServer.start().then(() => {
   const handler = apolloServer.createHandler();
-  return cors((req, res) => req.method === 'OPTIONS' ? send(res, 200, 'ok') : handler(req, res))
+  return cors((req, res) => (req.method === 'OPTIONS' ? send(res, 200, 'ok') : handler(req, res)));
 });
